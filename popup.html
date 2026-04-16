@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tab Inspector</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="1" y="1" width="18" height="18" rx="3" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+            <rect x="4" y="4" width="5" height="4" rx="1" fill="#6366f1" opacity="0.8"/>
+            <rect x="11" y="4" width="5" height="4" rx="1" fill="#6366f1" opacity="0.5"/>
+            <rect x="4" y="10" width="12" height="2" rx="1" fill="#6366f1" opacity="0.3"/>
+            <rect x="4" y="14" width="8" height="2" rx="1" fill="#6366f1" opacity="0.3"/>
+          </svg>
+        </div>
+        <h1 class="title">Tab Inspector</h1>
+      </div>
+      <div class="header-right">
+        <span class="tab-count" id="tabCount">-- tabs</span>
+        <button class="refresh-btn" id="refreshBtn" title="Refresh">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M12 7A5 5 0 1 1 7 2a5 5 0 0 1 4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M11 2v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-item">
+        <span class="stat-label">Total Memory</span>
+        <span class="stat-value" id="totalMemory">--</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-label">Windows</span>
+        <span class="stat-value" id="windowCount">--</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-label">Avg/Tab</span>
+        <span class="stat-value" id="avgMemory">--</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-label">Audible</span>
+        <span class="stat-value" id="audibleCount">--</span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M8.5 8.5L11.5 11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search tabs..." />
+      </div>
+      <div class="sort-controls">
+        <select class="sort-select" id="sortSelect">
+          <option value="memory">Memory ↓</option>
+          <option value="memory-asc">Memory ↑</option>
+          <option value="title">Title A-Z</option>
+          <option value="opened">Opened ↓</option>
+          <option value="lastActive">Last Active</option>
+          <option value="activations">Most Visited</option>
+        </select>
+        <select class="filter-select" id="filterSelect">
+          <option value="all">All tabs</option>
+          <option value="active">Active</option>
+          <option value="pinned">Pinned</option>
+          <option value="audible">Audible</option>
+          <option value="muted">Muted</option>
+          <option value="discarded">Discarded</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tab-list" id="tabList">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Loading tabs...</span>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span id="footerInfo">Sorted by memory usage (highest first)</span>
+      <button class="close-all-btn" id="closeDiscardedBtn">Close duplicates</button>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

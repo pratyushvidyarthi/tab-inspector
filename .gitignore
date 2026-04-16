@@ -1,0 +1,22 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build / packaging artifacts
+*.zip
+*.crx
+*.pem
+
+# Node (if you ever add a build step)
+node_modules/
+npm-debug.log*
+
+# Logs
+*.log
