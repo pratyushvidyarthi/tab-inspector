@@ -4,6 +4,21 @@ A Chrome extension that gives you a real-time dashboard of every open tab — me
 
 ![Tab Inspector Screenshot](screenshots/preview.png)
 
+---
+
+## ⬇️ Download & Install
+
+**No coding needed — just download and load into Chrome:**
+
+1. **[⬇️ Download tab-inspector-v1.1.0.zip](https://github.com/pratyushvidyarthi/tab-inspector/releases/download/v1.1.0/tab-inspector-v1.1.0.zip)**
+2. Unzip the downloaded file
+3. Open Chrome and go to **`chrome://extensions/`**
+4. Turn on **Developer mode** (toggle in the top-right corner)
+5. Click **Load unpacked** → select the unzipped `tab-inspector` folder
+6. Pin the extension from the Chrome toolbar 📌
+
+---
+
 ## Features
 
 - **Memory usage** per tab — JS heap used & allocated, with color-coded indicators (green / amber / red)
@@ -23,14 +38,7 @@ A Chrome extension that gives you a real-time dashboard of every open tab — me
 - **Auto-refresh** every 30 seconds
 - **Dark mode** support
 
-## Installation (Developer Mode)
-
-1. Download or clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable **Developer mode** (toggle in the top-right corner)
-4. Click **Load unpacked**
-5. Select the `tab-inspector` folder
-6. Pin the extension from the Chrome toolbar for quick access
+---
 
 ## How Memory Collection Works
 
@@ -45,6 +53,8 @@ Tab Inspector uses two methods to collect memory data:
 
 > **Note:** The `debugger` permission may briefly show a "Chrome is being debugged" banner while collecting data. This disappears after the data is fetched.
 
+---
+
 ## Permissions
 
 | Permission | Why it's needed |
@@ -55,6 +65,8 @@ Tab Inspector uses two methods to collect memory data:
 | `storage` | Persist tab open times and activity history across sessions |
 | `alarms` | Trigger periodic memory refresh every 30 seconds |
 | `<all_urls>` | Measure memory on any website you have open |
+
+---
 
 ## Project Structure
 
@@ -73,17 +85,7 @@ tab-inspector/
 └── README.md
 ```
 
-## Development
-
-Clone and load unpacked as described above. Any changes to the files take effect after clicking the **reload** button on `chrome://extensions/`.
-
-```bash
-git clone https://github.com/YOUR_USERNAME/tab-inspector.git
-cd tab-inspector
-# Load the folder in chrome://extensions/ with Developer Mode on
-```
-
-There is no build step — this is a plain HTML/CSS/JS extension.
+---
 
 ## Contributing
 
@@ -95,9 +97,13 @@ Pull requests are welcome! Please open an issue first to discuss what you'd like
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Open a Pull Request
 
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+---
 
 ## Changelog
 
