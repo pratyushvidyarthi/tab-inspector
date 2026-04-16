@@ -10,7 +10,7 @@ A Chrome extension that gives you a real-time dashboard of every open tab — me
 
 **No coding needed — just download and load into Chrome:**
 
-1. **[⬇️ Download tab-inspector-v1.1.0.zip](https://github.com/pratyushvidyarthi/tab-inspector/releases/tag/v1.1.0)**
+1. **[⬇️ Download tab-inspector-v2.1.0.zip](https://github.com/pratyushvidyarthi/tab-inspector/releases/tag/v2.1.0)**
 2. Unzip the downloaded file
 3. Open Chrome and go to **`chrome://extensions/`**
 4. Turn on **Developer mode** (toggle in the top-right corner)

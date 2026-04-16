@@ -622,3 +622,24 @@ body {
   text-overflow: ellipsis;
   max-width: 280px;
 }
+
+/* Custom tooltip */
+.tooltip-box {
+  position: fixed;
+  display: none;
+  background: #1e293b;
+  color: #f1f5f9;
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 6px 9px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 9999;
+  max-width: 240px;
+  white-space: pre-wrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+}
+
+[data-tooltip] {
+  cursor: default;
+}

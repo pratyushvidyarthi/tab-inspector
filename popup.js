@@ -96,48 +96,53 @@ function buildTabRow(tab, timing) {
   const loadTime = memInfo.loadTime > 0 ? `${memInfo.loadTime}ms` : null;
 
   // Memory display
+  const memTooltip = memBytes > 0
+    ? `Used JS heap: ${formatMemory(memBytes)}${memInfo.totalJSHeapSize ? `\nAllocated heap: ${formatMemory(memInfo.totalJSHeapSize)}` : ''}${memInfo.jsHeapSizeLimit ? `\nHeap limit: ${formatMemory(memInfo.jsHeapSizeLimit)}` : ''}\n${memPct.toFixed(1)}% of highest tab`
+    : 'Memory unavailable — JS heap data is restricted for this tab type';
   const memDisplay = memBytes > 0
-    ? `<span class="memory-value ${memClass}">${formatMemoryShort(memBytes)}</span>`
-    : `<span class="memory-value none" title="Memory not available for this tab type">—</span>`;
+    ? `<span class="memory-value ${memClass}" data-tooltip="${escapeHtml(memTooltip)}">${formatMemoryShort(memBytes)}</span>`
+    : `<span class="memory-value none" data-tooltip="${escapeHtml(memTooltip)}">—</span>`;
 
-  // Extra memory stats for tooltip area
   const domNodes = memInfo.domNodes ? `${memInfo.domNodes} nodes` : null;
   const resources = memInfo.resourceCount ? `${memInfo.resourceCount} res` : null;
+
+  const openedAtFull = timing_.openedAt ? new Date(timing_.openedAt).toLocaleString() : null;
+  const lastActiveFull = timing_.lastActivated ? new Date(timing_.lastActivated).toLocaleString() : null;
 
   row.innerHTML = `
     <div class="favicon-wrap">${faviconHtml}</div>
     <div class="tab-main">
       <div class="tab-title-row">
-        <span class="tab-title" title="${escapeHtml(tab.title || '')}">${escapeHtml(tab.title || domain || 'New Tab')}</span>
+        <span class="tab-title" data-tooltip="${escapeHtml(tab.title || '')}">${escapeHtml(tab.title || domain || 'New Tab')}</span>
         <div class="tab-badges">${badges}</div>
       </div>
-      <div class="tab-url" title="${escapeHtml(tab.url || '')}">${domain}</div>
+      <div class="tab-url" data-tooltip="${escapeHtml(tab.url || '')}">${domain}</div>
       <div class="tab-meta">
-        <span class="meta-item" title="Opened at">
+        <span class="meta-item" data-tooltip="Tab opened${openedAtFull ? `\n${openedAtFull}` : ''}">
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.1"/><path d="M5 3v2l1.5 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           ${openedAt}
         </span>
-        <span class="meta-item">
+        <span class="meta-item" data-tooltip="Last activated${lastActiveFull ? `\n${lastActiveFull}` : ''}">
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M8.5 5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" stroke="currentColor" stroke-width="1.1"/><path d="M5 5l1.5-1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           ${lastActive}
         </span>
-        ${visitCount > 0 ? `<span class="meta-item"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1.5L6.2 4H9l-2.3 1.7.9 2.8L5 7l-2.6 1.5.9-2.8L1 4h2.8z" stroke="currentColor" stroke-width="0.9" fill="none"/></svg>${visitCount} visits</span>` : ''}
-        ${loadTime ? `<span class="meta-item">⚡ ${loadTime}</span>` : ''}
-        ${domNodes ? `<span class="meta-item">DOM ${domNodes}</span>` : ''}
-        ${resources ? `<span class="meta-item">${resources}</span>` : ''}
-        <span class="meta-item muted">Tab ${tab.index + 1}</span>
+        ${visitCount > 0 ? `<span class="meta-item" data-tooltip="Times this tab was switched to"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1.5L6.2 4H9l-2.3 1.7.9 2.8L5 7l-2.6 1.5.9-2.8L1 4h2.8z" stroke="currentColor" stroke-width="0.9" fill="none"/></svg>${visitCount} visits</span>` : ''}
+        ${loadTime ? `<span class="meta-item" data-tooltip="Page load time\n(navigationStart → loadEventEnd)">⚡ ${loadTime}</span>` : ''}
+        ${domNodes ? `<span class="meta-item" data-tooltip="Total DOM elements on this page">${domNodes}</span>` : ''}
+        ${resources ? `<span class="meta-item" data-tooltip="Network resources loaded\n(scripts, images, fonts, etc.)">${resources}</span>` : ''}
+        <span class="meta-item muted" data-tooltip="Position in the tab bar">Tab ${tab.index + 1}</span>
       </div>
     </div>
     <div class="tab-memory">
       ${memDisplay}
-      ${memBytes > 0 ? `<div class="memory-bar-wrap"><div class="memory-bar ${memClass}" style="width:${memPct.toFixed(1)}%"></div></div>` : ''}
-      ${memInfo.totalJSHeapSize ? `<span class="memory-sub">${formatMemoryShort(memInfo.totalJSHeapSize)} alloc</span>` : ''}
+      ${memBytes > 0 ? `<div class="memory-bar-wrap" data-tooltip="${memPct.toFixed(1)}% of the highest memory tab"><div class="memory-bar ${memClass}" style="width:${memPct.toFixed(1)}%"></div></div>` : ''}
+      ${memInfo.totalJSHeapSize ? `<span class="memory-sub" data-tooltip="Total JS heap allocated\n(used + unused reserved memory)">${formatMemoryShort(memInfo.totalJSHeapSize)} alloc</span>` : ''}
     </div>
     <div class="tab-actions">
-      <button class="action-btn reload-btn" title="Reload tab" data-action="reload">
+      <button class="action-btn reload-btn" data-tooltip="Reload tab" data-action="reload">
         <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9 5.5A3.5 3.5 0 1 1 5.5 2a3.5 3.5 0 0 1 3 1.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8.5 1.5v2h-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button class="action-btn close-btn" title="Close tab" data-action="close">
+      <button class="action-btn close-btn" data-tooltip="Close tab" data-action="close">
         <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 2l7 7M9 2l-7 7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
       </button>
     </div>
@@ -352,3 +357,35 @@ document.getElementById('sortSelect').addEventListener('change', render);
 document.getElementById('filterSelect').addEventListener('change', render);
 
 loadAndRender();
+
+// Custom tooltip
+const tooltipBox = document.getElementById('tooltipBox');
+let tooltipTimer;
+
+document.addEventListener('mouseover', (e) => {
+  const el = e.target.closest('[data-tooltip]');
+  if (!el) return;
+  clearTimeout(tooltipTimer);
+  tooltipTimer = setTimeout(() => {
+    const text = el.dataset.tooltip;
+    if (!text) return;
+    tooltipBox.textContent = text;
+    tooltipBox.style.display = 'block';
+    const rect = el.getBoundingClientRect();
+    const tbw = tooltipBox.offsetWidth;
+    const tbh = tooltipBox.offsetHeight;
+    let top = rect.top - tbh - 7;
+    let left = rect.left + rect.width / 2 - tbw / 2;
+    if (top < 4) top = rect.bottom + 7;
+    left = Math.max(6, Math.min(left, window.innerWidth - tbw - 6));
+    tooltipBox.style.top = top + 'px';
+    tooltipBox.style.left = left + 'px';
+  }, 400);
+});
+
+document.addEventListener('mouseout', (e) => {
+  if (e.target.closest('[data-tooltip]')) {
+    clearTimeout(tooltipTimer);
+    tooltipBox.style.display = 'none';
+  }
+});
