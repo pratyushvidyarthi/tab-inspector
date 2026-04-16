@@ -39,57 +39,12 @@ async function collectMemoryViaScripting(tab) {
   });
 }
 
-async function collectMemoryViaDebugger(tabId) {
-  return new Promise((resolve) => {
-    const target = { tabId };
-    chrome.debugger.attach(target, '1.3', () => {
-      if (chrome.runtime.lastError) { resolve(null); return; }
-      chrome.debugger.sendCommand(target, 'Memory.getDOMCounters', {}, (domResult) => {
-        if (chrome.runtime.lastError) {
-          chrome.debugger.detach(target, () => {});
-          resolve(null);
-          return;
-        }
-        chrome.debugger.sendCommand(target, 'Performance.getMetrics', {}, (perfResult) => {
-          chrome.debugger.detach(target, () => {});
-          if (chrome.runtime.lastError || !perfResult) {
-            resolve({ domNodes: domResult ? domResult.nodes : 0 });
-            return;
-          }
-          const m = {};
-          if (perfResult.metrics) perfResult.metrics.forEach(x => { m[x.name] = x.value; });
-          resolve({
-            usedJSHeapSize: m['JSHeapUsedSize'] || 0,
-            totalJSHeapSize: m['JSHeapTotalSize'] || 0,
-            domNodes: domResult ? domResult.nodes : 0,
-            domEventListeners: domResult ? domResult.jsEventListeners : 0,
-            documents: m['Documents'] || 0,
-            frames: m['Frames'] || 0,
-            layoutObjects: m['LayoutObjects'] || 0,
-            scriptDuration: m['ScriptDuration'] || 0,
-            taskDuration: m['TaskDuration'] || 0,
-          });
-        });
-      });
-    });
-  });
-}
-
 async function refreshMemoryForTab(tab) {
   if (!tab || !tab.id) return;
   try {
     const data = await collectMemoryViaScripting(tab);
     if (data) {
       tabMemory[tab.id] = { ...data, source: 'scripting', updatedAt: Date.now() };
-      chrome.storage.local.set({ tabMemory: { ...tabMemory } });
-      return;
-    }
-  } catch (e) {}
-  try {
-    if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) return;
-    const data = await collectMemoryViaDebugger(tab.id);
-    if (data) {
-      tabMemory[tab.id] = { ...data, source: 'debugger', updatedAt: Date.now() };
       chrome.storage.local.set({ tabMemory: { ...tabMemory } });
     }
   } catch (e) {}

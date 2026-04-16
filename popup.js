@@ -64,7 +64,7 @@ function getTabMemoryBytes(tabId) {
   return m.usedJSHeapSize || m.jsHeapUsed || 0;
 }
 
-function buildTabRow(tab, timing, memory) {
+function buildTabRow(tab, timing) {
   const memBytes = getTabMemoryBytes(tab.id);
   const memClass = getMemoryClass(memBytes);
   const memPct = maxMemory > 0 ? Math.min(100, (memBytes / maxMemory) * 100) : 0;
@@ -77,12 +77,8 @@ function buildTabRow(tab, timing, memory) {
 
   // Favicon
   const firstChar = domain.charAt(0).toUpperCase() || '?';
-  let faviconHtml = `<div class="tab-favicon-placeholder">${firstChar}</div>`;
-  if (tab.favIconUrl && !tab.favIconUrl.startsWith('chrome://') && tab.favIconUrl !== '') {
-    faviconHtml = `<img class="tab-favicon" src="${tab.favIconUrl}" alt=""
-      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="tab-favicon-placeholder" style="display:none">${firstChar}</div>`;
-  }
+  const hasFavicon = tab.favIconUrl && !tab.favIconUrl.startsWith('chrome://') && tab.favIconUrl !== '';
+  const faviconHtml = `<div class="tab-favicon-placeholder"${hasFavicon ? ' style="display:none"' : ''}>${firstChar}</div>`;
 
   // Badges
   let badges = '';
@@ -146,6 +142,19 @@ function buildTabRow(tab, timing, memory) {
       </button>
     </div>
   `;
+
+  if (hasFavicon) {
+    const placeholder = row.querySelector('.tab-favicon-placeholder');
+    const img = document.createElement('img');
+    img.className = 'tab-favicon';
+    img.alt = '';
+    img.src = tab.favIconUrl;
+    img.addEventListener('error', () => {
+      img.style.display = 'none';
+      placeholder.style.display = 'flex';
+    });
+    row.querySelector('.favicon-wrap').insertBefore(img, placeholder);
+  }
 
   row.addEventListener('click', (e) => {
     if (e.target.closest('.tab-actions')) return;
@@ -267,7 +276,7 @@ function render() {
       fragment.appendChild(header);
     }
     windows[wid].forEach(tab => {
-      fragment.appendChild(buildTabRow(tab, tabTimings[tab.id], getTabMemoryBytes(tab.id)));
+      fragment.appendChild(buildTabRow(tab, tabTimings[tab.id]));
     });
   });
 
